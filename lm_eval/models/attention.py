@@ -133,13 +133,11 @@ class AttentionModel(LM):
         print("Within likelikood-rolling")
         for batch in self.batchify(tokenized, self.batch_size):
             batch_outs = self.process_batch(batch)
-            for log_probs, input_ids in zip(
-                batch_outs["log_probs"],
-                batch_outs["input_ids"],
-            ):
+            for log_probs, input_ids in zip(batch_outs["log_probs"], batch_outs["input_ids"],):
                 total_log_prob = 0.0 
-                for i in range(1, len(input_ids)):
-                    token_log_probs = log_probs[i - 1, input_ids[i]]
+                for i in range(len(input_ids) - 1): 
+                    #token_log_probs = log_probs[i - 1, input_ids[i]]
+                    token_log_probs = log_probs[i, input_ids[i + 1]]
                     total_log_prob += token_log_probs
                 results.append(total_log_prob)
         return results
